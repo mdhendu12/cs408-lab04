@@ -12,12 +12,14 @@ public class MemoModel extends AbstractModel {
     private DatabaseHandler db;
 
     public MemoModel(Context context) {
+
         super();
         db = new DatabaseHandler(context, null, null, 1);
+
     }
     public void initDefault() {
 
-        setOutput("Sample Text 1");
+        setOutput("Memo Area");
 
     }
 
@@ -26,17 +28,38 @@ public class MemoModel extends AbstractModel {
         return output;
     }
 
-
     public void setOutput(String newText) {
-
         String oldText = this.output;
         this.output = newText;
 
+        firePropertyChange(MemoController.TEXT_PROPERTY, oldText, newText);
+    }
+
+
+    public void setText(String newText) {
+
+        String oldText = this.output;
+        db.addMemo(newText);
+        this.output = db.getAllMemos();
+        newText = db.getAllMemos();
+
         Log.i(TAG, "Text1 Change: From " + oldText + " to " + newText);
 
-        firePropertyChange(MemoController.OUTPUT_PROPERTY, oldText, newText);
+        firePropertyChange(MemoController.TEXT_PROPERTY, oldText, newText);
 
     }
 
+    public void setID (String id) {
+
+        String oldText = this.output;
+        String newText;
+
+        db.deleteMemo(Integer.valueOf(id));
+
+        this.output = newText = db.getAllMemos();
+
+        firePropertyChange(MemoController.ID_PROPERTY, oldText, newText);
+
+    }
 
 }

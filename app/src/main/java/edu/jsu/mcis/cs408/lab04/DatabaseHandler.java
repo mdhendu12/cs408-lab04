@@ -25,7 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_MEMOS_TABLE = "CREATE TABLE memos (_id integer primary key autoincrement, name memo)";
+        String CREATE_MEMOS_TABLE = "CREATE TABLE memos (_id integer primary key autoincrement, memo text)";
         db.execSQL(CREATE_MEMOS_TABLE);
 
     }
@@ -49,13 +49,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public String deleteMemo(int id) {
+    public void deleteMemo(int id) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(TABLE_MEMOS, null, null);
-
-        return("Contacts Deleted");
+        db.delete(TABLE_MEMOS, "_id = ?", new String[]{ String.valueOf(id) });
+        db.close();
 
     }
 
@@ -93,7 +92,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             do {
                 int id = cursor.getInt(0);
-                s.append(getMemo(id)).append("\n");
+                s.append(id).append(": ").append(getMemo(id)).append("\n");
             }
             while ( cursor.moveToNext() );
         }

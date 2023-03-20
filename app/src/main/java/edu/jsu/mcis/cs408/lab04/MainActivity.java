@@ -1,10 +1,12 @@
 package edu.jsu.mcis.cs408.lab04;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import java.beans.PropertyChangeEvent;
 
@@ -32,6 +34,16 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         controller.addModel(model);
 
         model.initDefault();
+
+        DefaultClickHandler click = new DefaultClickHandler();
+        ConstraintLayout layout = binding.layout;
+
+        for (int i = 0; i < layout.getChildCount(); ++i) {
+            View child = layout.getChildAt(i);
+            if(child instanceof Button) {
+                child.setOnClickListener(click);
+            }
+        }
     }
 
     @Override
@@ -42,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
 
         Log.i(TAG, "New " + propertyName + " Value from Model: " + propertyValue);
 
-        if ( propertyName.equals(MemoController.OUTPUT_PROPERTY) ) {
+        if ( propertyName.equals(MemoController.TEXT_PROPERTY) ) {
 
             String oldPropertyValue = binding.outputTV.getText().toString();
 
@@ -52,6 +64,37 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
 
         }
 
+        else if ( propertyName.equals(MemoController.ID_PROPERTY) ) {
+
+            String oldPropertyValue = binding.outputTV.getText().toString();
+
+            if ( !oldPropertyValue.equals(propertyValue) ) {
+                binding.outputTV.setText(propertyValue);
+            }
+
+        }
+
+
+    }
+
+    class DefaultClickHandler implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+
+            String tag = ((Button) v).getTag().toString();
+
+            if (tag.equals("addButton")) {
+                String newText = binding.newMemoTV.getText().toString();
+                controller.changeText(newText);
+            }
+
+            else if (tag.equals("delButton")) {
+                String newText = binding.delMemoTV.getText().toString();
+                controller.changeID(newText);
+            }
+
+        }
 
     }
 }
